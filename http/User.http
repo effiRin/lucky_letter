@@ -1,0 +1,11 @@
+### 유저 정보 조회
+GET http://localhost:8080/v1/user/test/get
+
+
+### 유저 정보 등록
+POST http://localhost:8080/v1/user/test/save
+Content-Type: application/json
+
+{
+  "name" : "테스트라구요! 2"
+}
