@@ -27,12 +27,22 @@ jobs:
         # Runs a set of commands using the runners shell
 
         # [1]
-      - name: Set yaml file
+      - name: Set Yaml
         uses: microsoft/variable-substitution@v1
         with:
-          files: ${{ env.RESOURCE_PATH }}
+          files: ./src/main/resources/application-prod.yml
         env:
-           override.value: 'from application.yml''
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_USERNAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+
+#      - name: Set yaml file
+#        uses: microsoft/variable-substitution@v1
+#        with:
+#          files: ${{ env.RESOURCE_PATH }}
+#        env:
+#          override.value: 'from application.yml''
+
 #          override.value: ${{ secrets.DI_FROM_SECRET }}
 
 #        # [1]
