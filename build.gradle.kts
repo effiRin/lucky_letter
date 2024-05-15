@@ -42,5 +42,4 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.jar { enabled = true }
-tasks.bootJar { enabled = false }
+tasks.jar { enabled = false }
