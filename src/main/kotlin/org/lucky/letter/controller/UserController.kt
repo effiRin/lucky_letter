@@ -11,7 +11,7 @@ class UserController(
     private val userService: UserService,
 ) {
 
-    //    @Schema(description = "테스트 test용")
+    //    @Schema(description = "테스트 test 용")
     @GetMapping("/test/get")
     fun getUsers(): List<User> {
         println("LOGGING ::: GET TEST")
