@@ -32,7 +32,7 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-           override.value: 'from deploy.yaml' <-- 이렇게 사용해도 주입이 된다.
+           override.value: 'from deploy.yaml'
 #          override.value: ${{ secrets.DI_FROM_SECRET }}
 
 #        # [1]
