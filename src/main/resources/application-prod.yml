@@ -18,6 +18,9 @@ spring:
     password: ${password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+    hikari:
+      maximum-pool-size: 20
+
   jpa:
     hibernate:
       ddl-auto: none                # DB 초기화 전략 (none, create, create-drop, update, validate)
