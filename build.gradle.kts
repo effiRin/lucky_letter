@@ -29,6 +29,9 @@ dependencies {
 
 	implementation("mysql:mysql-connector-java:8.0.32")
     runtimeOnly("com.h2database:h2")
+
+    // health-check
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 tasks.withType<KotlinCompile> {
