@@ -1,7 +1,5 @@
 package org.lucky.letter.model.dto
 
-import java.time.LocalDateTime
-
 interface QuestionListInterface {
 
     fun getQuestionId(): Int

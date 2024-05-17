@@ -27,4 +27,9 @@ class AnswerService(
             rewardCount = user.rewardCount,
         )
     }
+
+    fun createAiAnswer(request: AnswerRequest): Boolean {
+        answerRepository.save(request.toAnswer())
+        return true
+    }
 }

@@ -16,4 +16,10 @@ class AnswerController(
     fun createAnswer(@RequestBody request: AnswerRequest): AnswerResponse {
         return answerService.createAnswer(request)
     }
+
+    // 답하기
+    @PostMapping("/ai")
+    fun createAiAnswer(@RequestBody request: AnswerRequest): Boolean {
+        return answerService.createAiAnswer(request)
+    }
 }
