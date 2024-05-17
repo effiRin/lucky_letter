@@ -101,7 +101,12 @@ class QuestionService(
         )
     }
 
-    fun getQuestionList(userId: Int, sorter: String?, isMine: Boolean): List<QuestionListResponse> {
+    fun getQuestionList(
+        userId: Int,
+        sorter: String,
+        myAnswer: Boolean,
+        myQuestion: Boolean,
+    ): List<QuestionListResponse> {
         var answers = when (sorter) {
             "popular" -> {
                 answerRepository.findQuestionIdOrderByPopularity().map {
@@ -126,15 +131,20 @@ class QuestionService(
             else -> throw InvalidParameterException()
         }
 
-        if (isMine) {
+        if (myAnswer) {
             val myAnsweredQuestionId = answerRepository.findAnswersByUserId(userId).map { it.questionId }
             answers = answers.filter { it.key in myAnsweredQuestionId }
         }
 
+        if (myQuestion) {
+            val myQuestionId = questionRepository.findQuestionsByUserId(userId).map { it.id }
+            answers = answers.filter { it.key in myQuestionId }
+        }
 
         val questionIds = answers.keys.toList()
 
-        val aiAnswer = answerRepository.findAnswersByUserIdAndQuestionIdIn(userId = 0, questionId = questionIds).associateBy { it.questionId }
+        val aiAnswer = answerRepository.findAnswersByUserIdAndQuestionIdIn(userId = 0, questionId = questionIds)
+            .associateBy { it.questionId }
 
         val result = mutableListOf<QuestionListResponse>()
 
@@ -164,12 +174,16 @@ class QuestionService(
                         answerCount = answerCount,
                         createdAt = it.createdAt,
                         userNickname = userRepository.findByIdOrNull(userId)?.nickname,
-                        aiAnswer = aiAnswerByQuestionId?.toAiAnswer()
+                        aiAnswer = aiAnswerByQuestionId?.toAiAnswer(),
                     ),
                 )
             }
         }
 
         return result
+    }
+
+    fun getMyQuestion(userId: Int): List<QuestionListResponse> {
+        return getQuestionList(userId = userId, myQuestion = true, myAnswer = false, sorter = "recent")
     }
 }

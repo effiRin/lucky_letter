@@ -38,6 +38,17 @@ class QuestionController(
     // 전체 질문 목록
     @GetMapping("/list/send")
     fun getQuestionList(userId: Int, sorter: String?, isMine: Boolean?): List<QuestionListResponse> {
-        return questionService.getQuestionList(userId = userId, sorter = sorter ?: "recent", isMine = isMine ?: false)
+        return questionService.getQuestionList(
+            userId = userId,
+            sorter = sorter ?: "recent",
+            myAnswer = isMine ?: false,
+            myQuestion = false,
+        )
+    }
+
+    // 내가 쓴 질문
+    @GetMapping("/list/my")
+    fun getMyQuestion(userId: Int): List<QuestionListResponse> {
+        return questionService.getMyQuestion(userId = userId)
     }
 }
