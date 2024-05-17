@@ -8,6 +8,7 @@ object AnswerQuery {
                 choice_id AS choiceId, 
                 count(*) AS cnt
             FROM answer
+            WHERE choice_id != 0
             GROUP BY questionId, choiceId
             ORDER BY cnt desc
     """
@@ -18,6 +19,7 @@ object AnswerQuery {
                 choice_id AS choiceId, 
                 count(*) AS cnt
             FROM answer
+            WHERE choice_id != 0
             GROUP BY questionId, choiceId
             ORDER BY id DESC
     """
