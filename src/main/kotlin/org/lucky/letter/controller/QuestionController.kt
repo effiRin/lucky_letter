@@ -1,6 +1,7 @@
 package org.lucky.letter.controller
 
 import org.lucky.letter.model.request.QuestionRequest
+import org.lucky.letter.model.response.QuestionListResponse
 import org.lucky.letter.model.response.QuestionResponse
 import org.lucky.letter.service.QuestionService
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,5 +26,11 @@ class QuestionController(
     @PostMapping("")
     fun createQuestion(@RequestBody request: QuestionRequest): QuestionResponse {
         return questionService.createQuestion(request = request)
+    }
+
+    // 전체 질문 목록
+    @GetMapping("/list")
+    fun getQuestionList(userId: Int, sorter: String?, isMine: Boolean?): List<QuestionListResponse> {
+        return questionService.getQuestionList(userId = userId, sorter = sorter ?: "recent", isMine = isMine ?: false)
     }
 }
