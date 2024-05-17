@@ -8,6 +8,7 @@ data class QuestionRequest(
     val title: String,
     val content: String,
     val choices: List<ChoiceRequest>,
+    val closedAt: Long,
 )
 
 fun QuestionRequest.toQuestion() = Question(
@@ -15,4 +16,5 @@ fun QuestionRequest.toQuestion() = Question(
     title = title,
     content = content,
     categoryId = categoryId,
+    closedAt = closedAt,
 )

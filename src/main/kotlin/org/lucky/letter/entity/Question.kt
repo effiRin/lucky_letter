@@ -13,4 +13,5 @@ data class Question(
     val title: String? = null,
     val content: String,
     val categoryId: String? = null,
+    val closedAt: Long,
 ) : BaseEntity()

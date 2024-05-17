@@ -1,5 +1,6 @@
 package org.lucky.letter.service
 
+import org.lucky.letter.common.DateUtil
 import org.lucky.letter.model.request.QuestionRequest
 import org.lucky.letter.model.request.toChoice
 import org.lucky.letter.model.request.toQuestion
@@ -16,7 +17,6 @@ import java.security.InvalidParameterException
 class QuestionService(
     private val questionRepository: QuestionRepository,
     private val choiceRepository: ChoiceRepository,
-    private val reviewRepository: ReviewRepository,
     private val userRepository: UserRepository,
 ) {
 
@@ -51,6 +51,7 @@ class QuestionService(
             title = question.title,
             content = question.content,
             choices = choicesResponse,
+            closedAt = DateUtil.convertLocalDateTime(question.closedAt)
         )
     }
 }
