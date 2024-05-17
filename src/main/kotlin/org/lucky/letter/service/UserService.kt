@@ -1,5 +1,6 @@
 package org.lucky.letter.service
 
+import org.lucky.letter.model.request.UserEmailRequest
 import org.lucky.letter.model.request.UserRequest
 import org.lucky.letter.model.request.toEntity
 import org.lucky.letter.model.response.UserResponse
@@ -17,6 +18,16 @@ class UserService(
     fun getUser(userId: Int): UserResponse {
         return userRepository.findUserById(userId)?.let {
             it.toResponse()
+        } ?: throw InvalidParameterException()
+    }
+
+    fun login(request: UserEmailRequest): UserResponse {
+        return userRepository.findByEmail(email = request.email)?.let {
+            if (it.password == request.password) {
+                return it.toResponse()
+            } else {
+                throw InvalidParameterException()
+            }
         } ?: throw InvalidParameterException()
     }
 

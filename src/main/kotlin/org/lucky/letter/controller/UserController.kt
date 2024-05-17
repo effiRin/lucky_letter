@@ -1,5 +1,6 @@
 package org.lucky.letter.controller
 
+import org.lucky.letter.model.request.UserEmailRequest
 import org.lucky.letter.model.request.UserRequest
 import org.lucky.letter.model.response.UserResponse
 import org.lucky.letter.service.UserService
@@ -13,6 +14,11 @@ class UserController(
     @GetMapping("")
     fun getUser(userId: Int): UserResponse {
         return userService.getUser(userId = userId)
+    }
+
+    @PutMapping("")
+    fun login(@RequestBody request: UserEmailRequest): UserResponse {
+        return userService.login(request = request)
     }
 
     @PostMapping("")

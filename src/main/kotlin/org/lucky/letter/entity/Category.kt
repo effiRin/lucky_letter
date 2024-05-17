@@ -10,4 +10,5 @@ data class Category(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
     val title: String,
+    val content: String? = "",
 ) : BaseEntity()
