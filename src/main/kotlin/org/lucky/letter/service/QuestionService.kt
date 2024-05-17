@@ -2,6 +2,7 @@ package org.lucky.letter.service
 
 import org.lucky.letter.common.DateUtil
 import org.lucky.letter.model.dto.AnswerCountResult
+import org.lucky.letter.model.dto.QuestionListResult
 import org.lucky.letter.model.request.QuestionRequest
 import org.lucky.letter.model.request.toChoice
 import org.lucky.letter.model.request.toQuestion
@@ -28,6 +29,50 @@ class QuestionService(
                 rewardCount = userRepository.findByIdOrNull(userId)?.rewardCount ?: 0,
             )
         }
+    }
+
+    fun getQuestions(userId: Int): QuestionReceivedResponse {
+        val rewardCount = userRepository.findByIdOrNull(userId)?.rewardCount ?: 0
+
+        val questionsDto = questionRepository.getQuestions(userId = userId).map {
+            QuestionListResult(
+                questionId = it.getQuestionId(),
+                title = it.getTitle(),
+                questionContent = it.getQuestionContent(),
+                closedAt = DateUtil.convertLocalDateTime(it.getClosedAt()),
+                choiceId = it.getChoiceId(),
+                choiceContent = it.getChoiceContent(),
+            )
+        }
+
+        val questions = questionsDto.groupBy { it.questionId }
+
+        val questionResponse = mutableListOf<QuestionReceivedListResponse>()
+
+        questions.mapKeys {
+            val result = it.value
+            val resultFirst = result.firstOrNull()
+
+            questionResponse.add(
+                QuestionReceivedListResponse(
+                    questionId = it.key,
+                    title = resultFirst?.title,
+                    content = resultFirst?.questionContent,
+                    choices = result.map {
+                        ChoiceResponse(
+                            id = it.choiceId,
+                            content = it.choiceContent,
+                        )
+                    },
+                    closedAt = resultFirst?.closedAt,
+                ),
+            )
+        }
+
+        return QuestionReceivedResponse(
+            questions = questionResponse,
+            rewardCount = rewardCount,
+        )
     }
 
     @Transactional
