@@ -28,3 +28,14 @@ spring:
       hibernate: # hibernate property 설정
         format_sql: true              # 쿼리 로그 포맷 (정렬)
         show_sql: true                # 쿼리 로그 출력
+
+management:
+  endpoints:
+    web:
+      base-path: /     # http://localhost:8080/health
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false
