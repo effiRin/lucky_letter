@@ -15,4 +15,5 @@ interface AnswerRepository : CrudRepository<Answer, Int> {
     fun findQuestionIdOrderByIdDesc(): List<AnswerCountInterface>
 
     fun findAnswersByUserId(userId: Int): List<Answer>
+    fun findAnswersByUserIdAndQuestionIdIn(userId: Int, questionId: List<Int>): List<Answer>
 }

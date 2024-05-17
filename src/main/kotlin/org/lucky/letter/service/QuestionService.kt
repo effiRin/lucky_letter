@@ -131,6 +131,11 @@ class QuestionService(
             answers = answers.filter { it.key in myAnsweredQuestionId }
         }
 
+
+        val questionIds = answers.keys.toList()
+
+        val aiAnswer = answerRepository.findAnswersByUserIdAndQuestionIdIn(userId = 0, questionId = questionIds).associateBy { it.questionId }
+
         val result = mutableListOf<QuestionListResponse>()
 
         answers.mapKeys { answer ->
@@ -142,6 +147,7 @@ class QuestionService(
 
             question?.let {
                 val answerCount = answerResults.sumOf { it.cnt }
+                val aiAnswerByQuestionId = aiAnswer[it.id]
 
                 result.add(
                     QuestionListResponse(
@@ -152,12 +158,13 @@ class QuestionService(
                             .map { choice ->
                                 choice.toChoiceListResponse(
                                     answerResultByChoice[choice.id],
-                                    answerCount,
+                                    answerCount, // 일단 ai 답변은 count +1하지 않음
                                 )
                             },
                         answerCount = answerCount,
                         createdAt = it.createdAt,
                         userNickname = userRepository.findByIdOrNull(userId)?.nickname,
+                        aiAnswer = aiAnswerByQuestionId?.toAiAnswer()
                     ),
                 )
             }

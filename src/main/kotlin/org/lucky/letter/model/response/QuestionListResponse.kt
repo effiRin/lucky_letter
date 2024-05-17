@@ -1,5 +1,6 @@
 package org.lucky.letter.model.response
 
+import org.lucky.letter.entity.Answer
 import org.lucky.letter.entity.Choice
 import org.lucky.letter.model.dto.AnswerCountResult
 import java.math.BigDecimal
@@ -14,12 +15,18 @@ data class QuestionListResponse(
     val answerCount: Int,
     val createdAt: LocalDateTime,
     val userNickname: String? = "",
+    val aiAnswer: AiAnswerResponse? = null,
 )
 
 data class ChoiceListResponse(
     val id: Int,
     val content: String,
     val percent: BigDecimal,
+)
+
+data class AiAnswerResponse(
+    val choiceId: Int,
+    val reason: String,
 )
 
 fun Choice.toChoiceListResponse(answerCountResults: AnswerCountResult?, answerCount: Int): ChoiceListResponse {
@@ -34,3 +41,8 @@ fun Choice.toChoiceListResponse(answerCountResults: AnswerCountResult?, answerCo
             )?.times(standard) ?: BigDecimal(0),
     )
 }
+
+fun Answer.toAiAnswer() = AiAnswerResponse(
+    choiceId = choiceId,
+    reason = reason ?: ""
+)
