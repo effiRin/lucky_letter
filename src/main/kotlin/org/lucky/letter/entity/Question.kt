@@ -3,16 +3,14 @@ package org.lucky.letter.entity
 import jakarta.persistence.*
 import org.lucky.letter.common.BaseEntity
 
-@Table(name = "`user`")
+@Table(name = "question")
 @Entity
-class User(
+data class Question(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
-    val email: String,
-    private val password: String,
-    val nickname: String,
-    var rewardCount: Int = 10,
+    val userId: Int,
+    val title: String? = null,
+    val content: String,
     val categoryId: String? = null,
-    val profileImage: String? = null,
 ) : BaseEntity()

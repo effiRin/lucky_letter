@@ -1,7 +1,7 @@
 package org.lucky.letter.controller
 
-import org.lucky.letter.entity.User
 import org.lucky.letter.model.request.UserRequest
+import org.lucky.letter.model.response.UserResponse
 import org.lucky.letter.service.UserService
 import org.springframework.web.bind.annotation.*
 
@@ -10,19 +10,15 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService,
 ) {
-
-    //    @Schema(description = "테스트 test용")
-    @GetMapping("/test/get")
-    fun getUsers(): List<User> {
-        println("LOGGING ::: GET TEST")
-        return userService.getUsers()
+    @GetMapping("")
+    fun getUser(userId: Int): UserResponse {
+        return userService.getUser(userId = userId)
     }
 
-    @PostMapping("/test/save")
-    fun saveUsers(
+    @PostMapping("")
+    fun saveUser(
         @RequestBody userRequest: UserRequest,
-    ): User {
-        println("LOGGING ::: SAVE TEST")
+    ): UserResponse {
         return userService.saveUser(userRequest)
     }
 }

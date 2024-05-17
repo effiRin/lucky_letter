@@ -1,9 +1,11 @@
 package org.lucky.letter.repository
 
 import org.lucky.letter.entity.User
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface UserRepository : JpaRepository<User, Long> {
+interface UserRepository : CrudRepository<User, Int> {
 
-    fun findUserById(id: Long): User?
+    fun findUserById(id: Int): User?
+
+    fun findByEmail(email: String,): User?
 }
