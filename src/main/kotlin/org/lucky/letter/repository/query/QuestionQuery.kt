@@ -24,8 +24,8 @@ object QuestionQuery {
             question q
         INNER JOIN
             choice c ON c.question_id = q.id
-        
-        
+        AND
+            q.user_id != :userId
         WHERE
             q.id NOT IN (SELECT question_id FROM answer WHERE user_id = :userId)                    
     """

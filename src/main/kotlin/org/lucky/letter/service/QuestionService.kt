@@ -202,7 +202,6 @@ class QuestionService(
         questionRepository.findQuestionsByUserIdOrderByIdDesc(userId).map { question ->
             val answer = answerByQuestionId[question.id]
             val answerResultByChoice = answer?.associateBy { it.choiceId }
-            val answerCount = answerResultByChoice
 
             result.add(
                 QuestionListResponse(
@@ -222,11 +221,6 @@ class QuestionService(
                     aiAnswer = aiAnswer[question.id]?.toAiAnswer(),
                 ),
             )
-
-            answerByQuestionId[question.id]?.let {
-                val answerResultByChoice = it.associateBy { it.choiceId }
-                val answerCount = answerResultByChoice.count()
-            }
         }
         return result
     }
