@@ -41,8 +41,7 @@ class QuestionController(
         return questionService.getQuestionList(
             userId = userId,
             sorter = sorter ?: "recent",
-            myAnswer = isMine ?: false,
-            myQuestion = false,
+            isMine = isMine ?: false,
         )
     }
 

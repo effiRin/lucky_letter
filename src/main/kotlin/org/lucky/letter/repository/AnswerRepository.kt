@@ -14,6 +14,11 @@ interface AnswerRepository : CrudRepository<Answer, Int> {
     @Query(nativeQuery = true, value = AnswerQuery.findQuestionIdOrderByIdDesc)
     fun findQuestionIdOrderByIdDesc(): List<AnswerCountInterface>
 
+    @Query(nativeQuery = true, value = AnswerQuery.findQuestionIdByUserId)
+    fun findQuestionIdByUserId(userId: Int): List<AnswerCountInterface>
+
     fun findAnswersByUserId(userId: Int): List<Answer>
     fun findAnswersByUserIdAndQuestionIdIn(userId: Int, questionId: List<Int>): List<Answer>
+
+    fun findAnswersByQuestionIdIn(questionId: List<Int>): List<Answer>
 }

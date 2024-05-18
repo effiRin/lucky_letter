@@ -104,8 +104,7 @@ class QuestionService(
     fun getQuestionList(
         userId: Int,
         sorter: String,
-        myAnswer: Boolean,
-        myQuestion: Boolean,
+        isMine: Boolean,
     ): List<QuestionListResponse> {
         var answers = when (sorter) {
             "popular" -> {
@@ -131,14 +130,9 @@ class QuestionService(
             else -> throw InvalidParameterException()
         }
 
-        if (myAnswer) {
+        if (isMine) {
             val myAnsweredQuestionId = answerRepository.findAnswersByUserId(userId).map { it.questionId }
             answers = answers.filter { it.key in myAnsweredQuestionId }
-        }
-
-        if (myQuestion) {
-            val myQuestionId = questionRepository.findQuestionsByUserId(userId).map { it.id }
-            answers = answers.filter { it.key in myQuestionId }
         }
 
         val questionIds = answers.keys.toList()
@@ -184,6 +178,56 @@ class QuestionService(
     }
 
     fun getMyQuestion(userId: Int): List<QuestionListResponse> {
-        return getQuestionList(userId = userId, myQuestion = true, myAnswer = false, sorter = "recent")
+        val myQuestions = questionRepository.findQuestionsByUserIdOrderByIdDesc(userId)
+        val questionIds = myQuestions.mapNotNull { it.id }
+
+        val user = userRepository.findUserById(id = userId)
+
+        val questionAnswers = answerRepository.findAnswersByQuestionIdIn(questionId = questionIds)
+                .groupBy { it.questionId }
+
+        val answerByQuestionId = answerRepository.findQuestionIdOrderByIdDesc().map {
+            AnswerCountResult(
+                questionId = it.getQuestionId(),
+                choiceId = it.getChoiceId(),
+                cnt = it.getCnt(),
+            )
+        }.groupBy { it.questionId }
+
+        val aiAnswer = answerRepository.findAnswersByUserIdAndQuestionIdIn(userId = 0, questionId = questionIds)
+            .associateBy { it.questionId }
+
+        val result = mutableListOf<QuestionListResponse>()
+
+        questionRepository.findQuestionsByUserIdOrderByIdDesc(userId).map { question ->
+            val answer = answerByQuestionId[question.id]
+            val answerResultByChoice = answer?.associateBy { it.choiceId }
+            val answerCount = answerResultByChoice
+
+            result.add(
+                QuestionListResponse(
+                    questionId = question.id!!,
+                    title = question.title,
+                    content = question.content,
+                    choices = choiceRepository.findChoicesByQuestionId(questionId = question.id)
+                        .map { choice ->
+                            choice.toChoiceListResponse(
+                                answerCountResults = answerResultByChoice?.get(choice.id),
+                                answerCount = answerResultByChoice?.get(choice.id)?.cnt ?: 0, // 일단 ai 답변은 count +1하지 않음
+                            )
+                        },
+                    answerCount = questionAnswers[question.id]?.size ?: 0,
+                    createdAt = question.createdAt,
+                    userNickname = user?.nickname,
+                    aiAnswer = aiAnswer[question.id]?.toAiAnswer(),
+                ),
+            )
+
+            answerByQuestionId[question.id]?.let {
+                val answerResultByChoice = it.associateBy { it.choiceId }
+                val answerCount = answerResultByChoice.count()
+            }
+        }
+        return result
     }
 }

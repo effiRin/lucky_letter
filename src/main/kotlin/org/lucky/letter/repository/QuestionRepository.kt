@@ -14,5 +14,5 @@ interface QuestionRepository : CrudRepository<Question, Int> {
     @Query(nativeQuery = true, value = QuestionQuery.getQuestions)
     fun getQuestions(userId: Int): List<QuestionListInterface>
 
-    fun findQuestionsByUserId(userId: Int): List<Question>
+    fun findQuestionsByUserIdOrderByIdDesc(userId: Int): List<Question>
 }
