@@ -22,6 +22,26 @@ object ReviewQuery {
             r.id = :reviewId
     """
 
+    const val findReviewList = """
+        SELECT
+            r.id as reviewId,
+            r.title,            
+            r.view_count as viewCount,
+            r.is_reported as isReported,
+            u.nickname,
+            u.id as userId
+        FROM
+            review r
+        INNER JOIN
+            question q ON q.id = r.question_id
+        INNER JOIN
+            user u ON u.id = q.user_id
+        WHERE
+            r.is_deleted = 0
+        AND
+            q.category_id IN (:categoryId)            
+    """
+
     const val findReviewComments = """
         SELECT
             rc.id as reviewCommentId,

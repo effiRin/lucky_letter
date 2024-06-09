@@ -11,6 +11,9 @@ interface ReviewRepository : CrudRepository<Review, Int> {
     @Query(nativeQuery = true, value = ReviewQuery.findReview)
     fun findReview(reviewId: Int): ReviewDetailInterface?
 
+    @Query(nativeQuery = true, value = ReviewQuery.findReviewList)
+    fun findReviewList(categoryId: List<Int>): List<ReviewDetailInterface>?
+
     fun findByQuestionIdAndIsDeleted(questionId: Int, isDeleted: Boolean = false): Review?
 
     fun findByIdAndIsDeleted(id: Int, isDeleted: Boolean = false): Review?

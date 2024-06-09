@@ -8,7 +8,7 @@ data class ReviewDetailResponse(
     val nickname: String,
     val title: String,
     val content: String,
-    val viewCount: Int? = 0,
+    val viewCount: Int,
 )
 
 fun ReviewDetailInterface.toReviewDetailResponse() = ReviewDetailResponse(
@@ -17,5 +17,5 @@ fun ReviewDetailInterface.toReviewDetailResponse() = ReviewDetailResponse(
     nickname = getNickname(),
     title = getTitle(),
     content = getContent(),
-    viewCount = getViewCount()
+    viewCount = getViewCount() ?: 0
 )

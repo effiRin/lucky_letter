@@ -8,6 +8,7 @@ import org.lucky.letter.model.request.ReviewCommentRequest
 import org.lucky.letter.model.request.ReviewRequest
 import org.lucky.letter.model.request.toEntity
 import org.lucky.letter.model.response.*
+import org.lucky.letter.repository.CategoryRepository
 import org.lucky.letter.repository.ReviewCommentRepository
 import org.lucky.letter.repository.ReviewRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -18,6 +19,7 @@ import java.security.InvalidParameterException
 class ReviewService(
     private val reviewRepository: ReviewRepository,
     private val reviewCommentRepository: ReviewCommentRepository,
+    private val categoryRepository: CategoryRepository,
 ) {
 
     fun saveReview(request: ReviewRequest): ReviewResponse {
@@ -31,6 +33,16 @@ class ReviewService(
     fun deleteReview(reviewId: Int): Boolean {
         val deletedReview = reviewRepository.findByIdAndIsDeleted(reviewId)?.delete() ?: return false
         return reviewRepository.save(deletedReview).isDeleted
+    }
+
+    fun getReviewList(categoryId: Int?, userId: Int): List<ReviewListResponse>? {
+        val questionCategoryId = categoryId?.let {
+            listOf(categoryId)
+        } ?: categoryRepository.findAll().mapNotNull { it.id }
+
+        return reviewRepository.findReviewList(categoryId = questionCategoryId)?.map {
+            it.toReviewListResponse(userId = userId)
+        }
     }
 
     fun getReviewDetail(reviewId: Int): ReviewDetailResponse? {

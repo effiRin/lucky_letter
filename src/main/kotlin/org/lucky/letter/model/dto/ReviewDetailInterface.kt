@@ -13,4 +13,8 @@ interface ReviewDetailInterface {
     fun getViewCount(): Int?
 
     fun getNickname(): String
+
+    fun getIsReported(): Int
+
+    fun getUserId(): Int
 }

@@ -5,6 +5,7 @@ import org.lucky.letter.model.request.ReviewCommentRequest
 import org.lucky.letter.model.request.ReviewRequest
 import org.lucky.letter.model.response.ReviewCommentResponse
 import org.lucky.letter.model.response.ReviewDetailResponse
+import org.lucky.letter.model.response.ReviewListResponse
 import org.lucky.letter.model.response.ReviewResponse
 import org.lucky.letter.service.ReviewService
 import org.springframework.web.bind.annotation.*
@@ -27,8 +28,16 @@ class ReviewController(
         return reviewService.deleteReview(reviewId)
     }
 
-    // 리뷰 상세 조회
+    // 리뷰 목록 조회
+    @GetMapping("/list")
+    fun getReviewList(
+        categoryId: Int? = null,
+        userId: Int
+    ): List<ReviewListResponse>? {
+        return reviewService.getReviewList(categoryId = categoryId, userId = userId)
+    }
 
+    // 리뷰 상세 조회
     @GetMapping("/{reviewId}")
     fun getReviewDetail(@PathVariable reviewId: Int): ReviewDetailResponse? {
         return reviewService.getReviewDetail(reviewId)
@@ -62,8 +71,6 @@ class ReviewController(
     ): Boolean {
         return reviewService.deleteReviewComment(reviewCommentId)
     }
-
-    // 리뷰 목록 조회
 
     // 리뷰 신고하기
     @PutMapping("/report/{reviewId}")
