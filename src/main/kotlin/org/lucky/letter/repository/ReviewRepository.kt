@@ -12,7 +12,10 @@ interface ReviewRepository : CrudRepository<Review, Int> {
     fun findReview(reviewId: Int): ReviewDetailInterface?
 
     @Query(nativeQuery = true, value = ReviewQuery.findReviewList)
-    fun findReviewList(categoryId: List<Int>): List<ReviewDetailInterface>?
+    fun findReviewList(categoryId: List<Int>, limit: Int, offset: Int): List<ReviewDetailInterface>?
+
+    @Query(nativeQuery = true, value = ReviewQuery.countReviewList)
+    fun countReviewList(categoryId: List<Int>): Long
 
     fun findByQuestionIdAndIsDeleted(questionId: Int, isDeleted: Boolean = false): Review?
 

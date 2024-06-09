@@ -11,6 +11,9 @@ import org.lucky.letter.model.response.*
 import org.lucky.letter.repository.CategoryRepository
 import org.lucky.letter.repository.ReviewCommentRepository
 import org.lucky.letter.repository.ReviewRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.security.InvalidParameterException
@@ -35,14 +38,24 @@ class ReviewService(
         return reviewRepository.save(deletedReview).isDeleted
     }
 
-    fun getReviewList(categoryId: Int?, userId: Int): List<ReviewListResponse>? {
+    fun getReviewList(categoryId: Int?, userId: Int, pageRequest: PageRequest): Page<ReviewListResponse> {
         val questionCategoryId = categoryId?.let {
             listOf(categoryId)
         } ?: categoryRepository.findAll().mapNotNull { it.id }
 
-        return reviewRepository.findReviewList(categoryId = questionCategoryId)?.map {
+        val content = reviewRepository.findReviewList(
+            categoryId = questionCategoryId,
+            limit = pageRequest.pageSize,
+            offset = pageRequest.offset.toInt(),
+        )?.map {
             it.toReviewListResponse(userId = userId)
         }
+
+        val totalCount = reviewRepository.countReviewList(
+            categoryId = questionCategoryId,
+        )
+
+        return PageImpl(content ?: listOf(), pageRequest, totalCount)
     }
 
     fun getReviewDetail(reviewId: Int): ReviewDetailResponse? {

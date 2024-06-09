@@ -39,7 +39,23 @@ object ReviewQuery {
         WHERE
             r.is_deleted = 0
         AND
-            q.category_id IN (:categoryId)            
+            q.category_id IN (:categoryId)    
+        ORDER BY viewCount DESC
+        LIMIT :limit
+        OFFSET :offset
+    """
+
+    const val countReviewList = """
+        SELECT
+           count(*)
+        FROM
+            review r
+        INNER JOIN
+            question q ON q.id = r.question_id
+        WHERE
+            r.is_deleted = 0
+        AND
+            q.category_id IN (:categoryId)    
     """
 
     const val findReviewComments = """

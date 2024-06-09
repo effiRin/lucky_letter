@@ -8,6 +8,8 @@ import org.lucky.letter.model.response.ReviewDetailResponse
 import org.lucky.letter.model.response.ReviewListResponse
 import org.lucky.letter.model.response.ReviewResponse
 import org.lucky.letter.service.ReviewService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -32,9 +34,11 @@ class ReviewController(
     @GetMapping("/list")
     fun getReviewList(
         categoryId: Int? = null,
-        userId: Int
-    ): List<ReviewListResponse>? {
-        return reviewService.getReviewList(categoryId = categoryId, userId = userId)
+        userId: Int,
+        page: Int? = 0,
+        size: Int? = 10,
+    ): Page<ReviewListResponse> {
+        return reviewService.getReviewList(categoryId = categoryId, userId = userId, pageRequest = PageRequest.of(page ?: 0, size ?: 10))
     }
 
     // 리뷰 상세 조회
