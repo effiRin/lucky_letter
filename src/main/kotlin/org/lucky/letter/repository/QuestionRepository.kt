@@ -15,4 +15,6 @@ interface QuestionRepository : CrudRepository<Question, Int> {
     fun getQuestions(userId: Int): List<QuestionListInterface>
 
     fun findQuestionsByUserIdOrderByIdDesc(userId: Int): List<Question>
+
+    fun findQuestionById(id: Int): Question?
 }

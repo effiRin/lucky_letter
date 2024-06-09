@@ -1,11 +1,13 @@
 package org.lucky.letter.controller
 
 import org.lucky.letter.model.request.QuestionRequest
+import org.lucky.letter.model.response.QuestionDetailResponse
 import org.lucky.letter.model.response.QuestionListResponse
 import org.lucky.letter.model.response.QuestionReceivedResponse
 import org.lucky.letter.model.response.QuestionResponse
 import org.lucky.letter.service.QuestionService
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -49,5 +51,11 @@ class QuestionController(
     @GetMapping("/list/my")
     fun getMyQuestion(userId: Int): List<QuestionListResponse> {
         return questionService.getMyQuestion(userId = userId)
+    }
+
+    // 질문 상세 조회
+    @GetMapping("/detail/{questionId}")
+    fun getQuestionDetail(@PathVariable questionId: Int): QuestionDetailResponse? {
+        return questionService.getQuestionDetail(questionId = questionId)
     }
 }

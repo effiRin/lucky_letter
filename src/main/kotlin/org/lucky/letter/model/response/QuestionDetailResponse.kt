@@ -4,22 +4,16 @@ import org.lucky.letter.common.DateUtil
 import org.lucky.letter.entity.Question
 import java.time.LocalDateTime
 
-data class QuestionResponse(
+data class QuestionDetailResponse(
     val questionId: Int,
     val title: String? = null,
     val content: String,
-    val choices: List<ChoiceResponse>,
-    val rewardCount: Int? = 0,
     val closedAt: LocalDateTime,
 )
 
-fun Question.toQuestionResponse(choices: List<ChoiceResponse>, rewardCount: Int) = QuestionResponse(
+fun Question.toQuestionDetailResponse() = QuestionDetailResponse(
     questionId = id!!,
     title = title,
     content = content,
-    choices = choices,
-    rewardCount = rewardCount,
     closedAt = DateUtil.convertLocalDateTime(closedAt),
 )
-
-

@@ -24,11 +24,15 @@ class QuestionService(
 
     fun getQuestion(userId: Int): QuestionResponse? {
         return questionRepository.getQuestion(userId = userId)?.let {
-            it.toResponse(
+            it.toQuestionResponse(
                 choices = choiceRepository.findChoicesByQuestionId(questionId = it.id!!).map { it.toResponse() },
                 rewardCount = userRepository.findByIdOrNull(userId)?.rewardCount ?: 0,
             )
         }
+    }
+
+    fun getQuestionDetail(questionId: Int): QuestionDetailResponse? {
+        return questionRepository.findQuestionById(questionId)?.toQuestionDetailResponse()
     }
 
     fun getQuestions(userId: Int): QuestionReceivedResponse {
