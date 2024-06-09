@@ -22,4 +22,18 @@ object ReviewQuery {
             r.id = :reviewId
     """
 
+    const val findReviewComments = """
+        SELECT
+            rc.id as reviewCommentId,
+            rc.content,
+            rc.is_reported as isReported,
+            rc.created_at as createdAt,
+            u.nickname
+        FROM
+            review_comment rc
+        INNER JOIN
+            user u ON u.id = rc.user_id
+        WHERE
+            rc.review_id = :reviewId
+    """
 }
