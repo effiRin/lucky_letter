@@ -1,8 +1,7 @@
 package org.lucky.letter.controller
 
-import org.lucky.letter.model.request.UserEmailRequest
-import org.lucky.letter.model.request.UserInfoRequest
-import org.lucky.letter.model.request.UserRequest
+import org.lucky.letter.model.request.*
+import org.lucky.letter.model.response.UserDuplicateCheckResponse
 import org.lucky.letter.model.response.UserResponse
 import org.lucky.letter.service.UserService
 import org.springframework.web.bind.annotation.*
@@ -25,7 +24,7 @@ class UserController(
     }
 
     @PutMapping("/login")
-    fun login(@RequestBody request: UserEmailRequest): UserResponse {
+    fun login(@RequestBody request: UserLoginRequest): UserResponse {
         return userService.login(request = request)
     }
 
@@ -41,5 +40,12 @@ class UserController(
         @RequestBody request: UserInfoRequest,
     ): Boolean {
         return userService.withdrawUser(request = request)
+    }
+
+    @PostMapping("/check")
+    fun checkEmailAndNickname(
+        @RequestBody request: UserDuplicateCheckRequest
+    ): UserDuplicateCheckResponse {
+        return userService.checkEmailAndNickname(request)
     }
 }

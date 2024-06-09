@@ -1,9 +1,7 @@
 package org.lucky.letter.service
 
-import org.lucky.letter.model.request.UserEmailRequest
-import org.lucky.letter.model.request.UserInfoRequest
-import org.lucky.letter.model.request.UserRequest
-import org.lucky.letter.model.request.toEntity
+import org.lucky.letter.model.request.*
+import org.lucky.letter.model.response.UserDuplicateCheckResponse
 import org.lucky.letter.model.response.UserResponse
 import org.lucky.letter.model.response.toResponse
 import org.lucky.letter.repository.UserRepository
@@ -38,7 +36,7 @@ class UserService(
         } ?: throw InvalidParameterException()
     }
 
-    fun login(request: UserEmailRequest): UserResponse {
+    fun login(request: UserLoginRequest): UserResponse {
         return userRepository.findByEmailAndIsDeleted(email = request.email)?.let {
             if (it.password == request.password) {
                 return it.toResponse()
@@ -70,5 +68,14 @@ class UserService(
                 throw InvalidParameterException()
             }
         } ?: throw InvalidParameterException()
+    }
+
+    fun checkEmailAndNickname(request: UserDuplicateCheckRequest): UserDuplicateCheckResponse {
+        val response = UserDuplicateCheckResponse()
+
+        return response.apply {
+            email = request.email?.let { userRepository.findByEmailAndIsDeleted(it)?.let { false } ?: true }
+            nickname = request.nickname?.let { userRepository.findByNicknameAndIsDeleted(it)?.let { false } ?: true }
+        }
     }
 }
