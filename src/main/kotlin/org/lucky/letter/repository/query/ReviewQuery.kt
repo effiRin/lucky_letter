@@ -35,5 +35,7 @@ object ReviewQuery {
             user u ON u.id = rc.user_id
         WHERE
             rc.review_id = :reviewId
+        AND
+            rc.is_deleted = 0
     """
 }

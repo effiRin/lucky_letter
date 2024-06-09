@@ -1,5 +1,6 @@
 package org.lucky.letter.controller
 
+import org.lucky.letter.model.request.ReviewCommentModifyRequest
 import org.lucky.letter.model.request.ReviewCommentRequest
 import org.lucky.letter.model.request.ReviewRequest
 import org.lucky.letter.model.response.ReviewCommentResponse
@@ -39,11 +40,32 @@ class ReviewController(
         return reviewService.getReviewComment(reviewId)
     }
 
-    // 리뷰 댓글 생성(수정 x)
+    // 리뷰 댓글 생성
     @PostMapping("/comment")
-    fun saveReviewComment(
+    fun createReviewComment(
         @RequestBody request: ReviewCommentRequest,
     ): Boolean {
-        return reviewService.saveComment(request)
+        return reviewService.createReviewComment(request)
     }
+
+    // 리뷰 댓글 수정
+    @PutMapping("/comment")
+    fun modifyReviewComment(
+        @RequestBody request: ReviewCommentModifyRequest,
+    ): Boolean {
+        return reviewService.modifyReviewComment(request)
+    }
+
+    @DeleteMapping("/comment/{reviewCommentId}")
+    fun deleteReviewComment(
+        @PathVariable reviewCommentId: Int
+    ): Boolean {
+        return reviewService.deleteReviewComment(reviewCommentId)
+    }
+
+    // 리뷰 목록 조회
+
+    // 리뷰 신고하기
+
+    // 리뷰 댓글 신고하기
 }

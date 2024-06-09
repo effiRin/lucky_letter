@@ -10,4 +10,6 @@ interface ReviewCommentRepository : CrudRepository<ReviewComment, Int> {
 
     @Query(nativeQuery = true, value = ReviewQuery.findReviewComments)
     fun findReviewComments(reviewId: Int): List<ReviewCommentInterface>?
+
+    fun findByIdAndIsDeleted(id: Int, isDeleted: Boolean = false): ReviewComment?
 }
