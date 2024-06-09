@@ -58,7 +58,7 @@ class ReviewController(
 
     @DeleteMapping("/comment/{reviewCommentId}")
     fun deleteReviewComment(
-        @PathVariable reviewCommentId: Int
+        @PathVariable reviewCommentId: Int,
     ): Boolean {
         return reviewService.deleteReviewComment(reviewCommentId)
     }
@@ -66,6 +66,14 @@ class ReviewController(
     // 리뷰 목록 조회
 
     // 리뷰 신고하기
+    @PutMapping("/report/{reviewId}")
+    fun reportReview(@PathVariable reviewId: Int): Boolean {
+        return reviewService.reportReview(reviewId)
+    }
 
     // 리뷰 댓글 신고하기
+    @PutMapping("/comment/report/{reviewCommentId}")
+    fun reportReviewComment(@PathVariable reviewCommentId: Int): Boolean {
+        return reviewService.reportReviewComment(reviewCommentId)
+    }
 }

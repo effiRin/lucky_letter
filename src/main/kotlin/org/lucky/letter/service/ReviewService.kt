@@ -64,7 +64,24 @@ class ReviewService(
     }
 
     fun deleteReviewComment(reviewCommentId: Int): Boolean {
-        val deletedReviewComment = reviewCommentRepository.findByIdAndIsDeleted(reviewCommentId)?.delete() ?: return false
+        val deletedReviewComment =
+            reviewCommentRepository.findByIdAndIsDeleted(reviewCommentId)?.delete() ?: return false
         return reviewCommentRepository.save(deletedReviewComment).isDeleted
+    }
+
+    fun reportReview(reviewId: Int): Boolean {
+        return reviewRepository.findByIdOrNull(reviewId)?.let {
+            reviewRepository.save(
+                it.apply { isReported = true },
+            ).id == reviewId
+        } ?: false
+    }
+
+    fun reportReviewComment(reviewCommentId: Int): Boolean {
+        return reviewCommentRepository.findByIdOrNull(reviewCommentId)?.let {
+            reviewCommentRepository.save(
+                it.apply { isReported = true },
+            ).id == reviewCommentId
+        } ?: false
     }
 }
