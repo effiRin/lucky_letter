@@ -10,8 +10,8 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
     val email: String,
-    val password: String,
-    val nickname: String,
+    var password: String,
+    var nickname: String,
     var rewardCount: Int = 10,
     val categoryId: String? = null,
     val profileImage: String? = null,

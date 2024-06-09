@@ -1,6 +1,7 @@
 package org.lucky.letter.service
 
 import org.lucky.letter.model.request.UserEmailRequest
+import org.lucky.letter.model.request.UserModifyRequest
 import org.lucky.letter.model.request.UserRequest
 import org.lucky.letter.model.request.toEntity
 import org.lucky.letter.model.response.UserResponse
@@ -13,11 +14,28 @@ import java.security.InvalidParameterException
 class UserService(
     private val userRepository: UserRepository,
 ) {
-    fun getUsers() = userRepository.findAll()
 
     fun getUser(userId: Int): UserResponse {
         return userRepository.findUserById(userId)?.let {
             it.toResponse()
+        } ?: throw InvalidParameterException()
+    }
+
+    fun modifyUser(request: UserModifyRequest): UserResponse {
+        return userRepository.findUserById(request.userId)?.let { user ->
+            val entity = user.apply {
+                nickname = request.nickname ?: nickname
+
+                request.password?.let {
+                    if (user.password == request.password) {
+                        password = request.newPassword ?: password
+                    } else {
+                        throw InvalidParameterException()
+                    }
+                }
+            }
+
+            userRepository.save(entity).toResponse()
         } ?: throw InvalidParameterException()
     }
 

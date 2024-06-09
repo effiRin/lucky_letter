@@ -1,6 +1,7 @@
 package org.lucky.letter.controller
 
 import org.lucky.letter.model.request.UserEmailRequest
+import org.lucky.letter.model.request.UserModifyRequest
 import org.lucky.letter.model.request.UserRequest
 import org.lucky.letter.model.response.UserResponse
 import org.lucky.letter.service.UserService
@@ -17,12 +18,19 @@ class UserController(
     }
 
     @PutMapping("")
+    fun modifyUser(
+        @RequestBody request: UserModifyRequest,
+    ): UserResponse {
+        return userService.modifyUser(request = request)
+    }
+
+    @PutMapping("/login")
     fun login(@RequestBody request: UserEmailRequest): UserResponse {
         return userService.login(request = request)
     }
 
-    @PostMapping("")
-    fun saveUser(
+    @PostMapping("/join")
+    fun joinUser(
         @RequestBody userRequest: UserRequest,
     ): UserResponse {
         return userService.saveUser(userRequest)
