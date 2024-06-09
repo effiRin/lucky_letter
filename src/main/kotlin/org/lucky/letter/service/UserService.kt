@@ -1,7 +1,7 @@
 package org.lucky.letter.service
 
 import org.lucky.letter.model.request.UserEmailRequest
-import org.lucky.letter.model.request.UserModifyRequest
+import org.lucky.letter.model.request.UserInfoRequest
 import org.lucky.letter.model.request.UserRequest
 import org.lucky.letter.model.request.toEntity
 import org.lucky.letter.model.response.UserResponse
@@ -9,6 +9,7 @@ import org.lucky.letter.model.response.toResponse
 import org.lucky.letter.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.security.InvalidParameterException
+import java.time.LocalDateTime
 
 @Service
 class UserService(
@@ -16,13 +17,11 @@ class UserService(
 ) {
 
     fun getUser(userId: Int): UserResponse {
-        return userRepository.findUserById(userId)?.let {
-            it.toResponse()
-        } ?: throw InvalidParameterException()
+        return userRepository.findUserByIdAndIsDeleted(userId)?.toResponse() ?: throw InvalidParameterException()
     }
 
-    fun modifyUser(request: UserModifyRequest): UserResponse {
-        return userRepository.findUserById(request.userId)?.let { user ->
+    fun modifyUser(request: UserInfoRequest): UserResponse {
+        return userRepository.findUserByIdAndIsDeleted(request.userId)?.let { user ->
             val entity = user.apply {
                 nickname = request.nickname ?: nickname
 
@@ -40,7 +39,7 @@ class UserService(
     }
 
     fun login(request: UserEmailRequest): UserResponse {
-        return userRepository.findByEmail(email = request.email)?.let {
+        return userRepository.findByEmailAndIsDeleted(email = request.email)?.let {
             if (it.password == request.password) {
                 return it.toResponse()
             } else {
@@ -55,5 +54,21 @@ class UserService(
         } ?: run {
             userRepository.save(request.toEntity()).toResponse()
         }
+    }
+
+    fun withdrawUser(request: UserInfoRequest): Boolean {
+        return userRepository.findUserByIdAndIsDeleted(request.userId)?.let { user ->
+            if (user.password == request.password) {
+                user.apply {
+                    isDeleted = true
+                    deletedAt = LocalDateTime.now()
+                }.run {
+                    userRepository.save(this)
+                    true
+                }
+            } else {
+                throw InvalidParameterException()
+            }
+        } ?: throw InvalidParameterException()
     }
 }

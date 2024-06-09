@@ -7,5 +7,8 @@ interface UserRepository : CrudRepository<User, Int> {
 
     fun findUserById(id: Int): User?
 
-    fun findByEmail(email: String,): User?
+    fun findUserByIdAndIsDeleted(id: Int, isDeleted: Boolean = false): User?
+
+    fun findByEmail(email: String): User?
+    fun findByEmailAndIsDeleted(email: String, isDeleted: Boolean = false): User?
 }

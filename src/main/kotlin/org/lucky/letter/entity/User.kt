@@ -2,6 +2,7 @@ package org.lucky.letter.entity
 
 import jakarta.persistence.*
 import org.lucky.letter.common.BaseEntity
+import java.time.LocalDateTime
 
 @Table(name = "`user`")
 @Entity
@@ -15,4 +16,6 @@ class User(
     var rewardCount: Int = 10,
     val categoryId: String? = null,
     val profileImage: String? = null,
+    var isDeleted: Boolean? = false,
+    var deletedAt: LocalDateTime? = null,
 ) : BaseEntity()
