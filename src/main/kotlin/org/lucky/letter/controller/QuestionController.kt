@@ -1,7 +1,6 @@
 package org.lucky.letter.controller
 
 import org.lucky.letter.model.request.QuestionRequest
-import org.lucky.letter.model.response.QuestionDetailResponse
 import org.lucky.letter.model.response.QuestionListResponse
 import org.lucky.letter.model.response.QuestionReceivedResponse
 import org.lucky.letter.model.response.QuestionResponse
@@ -55,7 +54,7 @@ class QuestionController(
 
     // 질문 상세 조회
     @GetMapping("/detail/{questionId}")
-    fun getQuestionDetail(@PathVariable questionId: Int): QuestionDetailResponse? {
-        return questionService.getQuestionDetail(questionId = questionId)
+    fun getQuestionDetail(@PathVariable questionId: Int, userId: Int): QuestionListResponse? {
+        return questionService.getQuestionDetail(questionId = questionId, userId = userId)
     }
 }

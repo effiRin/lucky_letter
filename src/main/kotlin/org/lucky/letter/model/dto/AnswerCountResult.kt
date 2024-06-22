@@ -5,3 +5,11 @@ data class AnswerCountResult(
     val choiceId: Int,
     val cnt: Int,
 )
+
+fun AnswerCountInterface.toAnswerCountResult(): AnswerCountResult {
+    return AnswerCountResult(
+        questionId = getQuestionId(),
+        choiceId = getChoiceId(),
+        cnt = getCnt(),
+    )
+}

@@ -2,6 +2,17 @@ package org.lucky.letter.repository.query
 
 object AnswerQuery {
 
+    const val findQuestionAnswer = """
+            SELECT 
+                question_id AS questionId,
+                choice_id AS choiceId, 
+                count(*) AS cnt
+            FROM answer
+            WHERE choice_id != 0
+            AND question_id = :questionId
+            GROUP BY questionId, choiceId
+    """
+
     const val findQuestionIdOrderByPopularity = """
             SELECT 
                 question_id AS questionId,

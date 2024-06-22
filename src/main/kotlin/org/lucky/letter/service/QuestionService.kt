@@ -3,6 +3,7 @@ package org.lucky.letter.service
 import org.lucky.letter.common.DateUtil
 import org.lucky.letter.model.dto.AnswerCountResult
 import org.lucky.letter.model.dto.QuestionListResult
+import org.lucky.letter.model.dto.toAnswerCountResult
 import org.lucky.letter.model.request.QuestionRequest
 import org.lucky.letter.model.request.toChoice
 import org.lucky.letter.model.request.toQuestion
@@ -31,8 +32,35 @@ class QuestionService(
         }
     }
 
-    fun getQuestionDetail(questionId: Int): QuestionDetailResponse? {
-        return questionRepository.findQuestionById(questionId)?.toQuestionDetailResponse()
+    fun getQuestionDetail(userId: Int, questionId: Int): QuestionListResponse? {
+        val answer = answerRepository.findQuestionAnswer(questionId)
+        val answerCountResult = answer.map { it.toAnswerCountResult() }
+        val answerCount = answerCountResult.sumOf { it.cnt }
+        val answerResultByChoiceId = answerCountResult.associateBy { it.choiceId }
+
+        val aiAnswer = answerRepository.findAnswersByUserIdAndQuestionId(userId = 0, questionId = questionId).takeIf { it.isNotEmpty() }?.let {
+            it.random()
+        }
+
+        return questionRepository.findQuestionById(questionId)?.let { question ->
+
+            QuestionListResponse(
+                questionId = question.id!!,
+                title = question.title,
+                content = question.content,
+                choices = choiceRepository.findChoicesByQuestionId(questionId = questionId)
+                    .map { choice ->
+                        choice.toChoiceListResponse(
+                            answerResultByChoiceId[choice.id],
+                            answerCount, // 일단 ai 답변은 count +1하지 않음
+                        )
+                    },
+                answerCount = answer.size,
+                createdAt = question.createdAt,
+                userNickname = userRepository.findByIdOrNull(userId)?.nickname,
+                aiAnswer = aiAnswer?.toAiAnswer(),
+            )
+        }
     }
 
     fun getQuestions(userId: Int): QuestionReceivedResponse {
@@ -113,21 +141,13 @@ class QuestionService(
         var answers = when (sorter) {
             "popular" -> {
                 answerRepository.findQuestionIdOrderByPopularity().map {
-                    AnswerCountResult(
-                        questionId = it.getQuestionId(),
-                        choiceId = it.getChoiceId(),
-                        cnt = it.getCnt(),
-                    )
+                    it.toAnswerCountResult()
                 }.groupBy { it.questionId }
             }
 
             "recent" -> {
                 answerRepository.findQuestionIdOrderByIdDesc().map {
-                    AnswerCountResult(
-                        questionId = it.getQuestionId(),
-                        choiceId = it.getChoiceId(),
-                        cnt = it.getCnt(),
-                    )
+                    it.toAnswerCountResult()
                 }.groupBy { it.questionId }
             }
 
@@ -188,7 +208,7 @@ class QuestionService(
         val user = userRepository.findUserById(id = userId)
 
         val questionAnswers = answerRepository.findAnswersByQuestionIdIn(questionId = questionIds)
-                .groupBy { it.questionId }
+            .groupBy { it.questionId }
 
         val answerByQuestionId = answerRepository.findQuestionIdOrderByIdDesc().map {
             AnswerCountResult(
